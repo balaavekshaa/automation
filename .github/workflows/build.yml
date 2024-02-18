@@ -43,13 +43,14 @@ jobs:
           retention-days: 5
       - name: Output artifact ID
         run:  echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
-  Deploy:
+  deploy:
     needs: build
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
     steps:
-      - name: download artifact
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: my-application
-          path: deployment/
