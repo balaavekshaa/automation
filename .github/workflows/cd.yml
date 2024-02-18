@@ -22,7 +22,6 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: my-artifact.zip
-      - name: Display structure of downloaded files
-        run: ls -R
-                  
+          name: my-artifact
+          path: target
+      - run: zip -r build.zip build/
