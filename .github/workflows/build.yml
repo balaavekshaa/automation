@@ -45,7 +45,7 @@ jobs:
         run:  echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
   Deploy:
     needs: build
-    runs-on:  self-hosted
+    runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: download artifact
