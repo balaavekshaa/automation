@@ -38,7 +38,7 @@ jobs:
         run: mvn -B clean  package
       - uses: actions/upload-artifact@v4
         with:
-          name: my-application.war
+          name: my-application
           path: target/*.war
           retention-days: 5
       - name: Output artifact ID
@@ -51,5 +51,5 @@ jobs:
       - name: download artifact
         uses: actions/download-artifact@v4
         with:
-          name: my-application.war
+          name: my-application
           path: deployment/
