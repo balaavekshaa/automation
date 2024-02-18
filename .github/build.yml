@@ -3,7 +3,7 @@ name: sample
 on:
   push:
     branches:
-      - feature/*
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
