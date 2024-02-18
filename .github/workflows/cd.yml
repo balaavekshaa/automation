@@ -23,6 +23,7 @@ jobs:
       - name: download artifact
         uses: actions/download-artifact@v4
         with:
-          name: myartifact
-          path: target
+          name: my-application.war
+          path: deployment/
+
     
