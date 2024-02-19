@@ -1,72 +1,40 @@
 ---
-- name: Install, Deploy, and Restart Tomcat
+- name: Install Tomcat without sudo
   hosts: localhost
-  become: yes
   vars:
     tomcat_version: "9.0.62"
-    tomcat_home: "tomcat"
-    tomcat_user: "tomcat"
-    tomcat_group: "tomcat"
-    war_file: "sparkjava-hello-world-1.0.war" 
-    app_name: "myapp"
-
+    tomcat_install_dir: "{{ ansible_env.HOME }}/tomcat"
+    tomcat_user: "{{ ansible_user }}"
   tasks:
-    - name: Install necessary packages
-      apt:
-        name:
-          - default-jdk
-          - unzip
-          - tar
-        state: present
-      when: ansible_os_family == "Debian"
-
-    - name: Install necessary packages
-      yum:
-        name:
-          - java-1.8.0-openjdk
-          - unzip
-          - tar
-        state: present
-      when: ansible_os_family == "RedHat"
-
-
+    - name: Create Tomcat directory
+      file:
+        path: "{{ tomcat_install_dir }}"
+        state: directory
+        mode: '0755'
 
     - name: Download Tomcat
       get_url:
-        url: "https://archive.apache.org/dist/tomcat/tomcat-9/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        url: "https://downloads.apache.org/tomcat/tomcat-9/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
         dest: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
-        validate_certs: no
-
-    - name: Create Tomcat directory
-      file:
-        path: "{{ tomcat_home }}"
-        state: directory
-        mode: '0777'
-
-
+        validate_certs: yes
 
     - name: Extract Tomcat
       ansible.builtin.unarchive:
         src: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
-        dest: "{{ tomcat_home }}"
+        dest: "{{ tomcat_install_dir }}"
         remote_src: yes
-        extra_opts: [--strip-components=1]
-        creates: "{{ tomcat_home }}/bin/startup.sh"
+        creates: "{{ tomcat_install_dir }}/apache-tomcat-{{ tomcat_version }}"
 
-     
-    
+    - name: Update Tomcat permissions
+      file:
+        path: "{{ tomcat_install_dir }}/apache-tomcat-{{ tomcat_version }}"
+        owner: "{{ tomcat_user }}"
+        group: "{{ tomcat_user }}"
+        recurse: yes
+        mode: '0755'
 
-    - name: Stop Tomcat
-      command: "{{ tomcat_home }}/bin/shutdown.sh"
-      ignore_errors: yes
-    
-    - name: Deploy WAR file
-      copy:
-        src: "{{ war_file }}"
-        dest: "{{ tomcat_home }}/webapps/{{ app_name }}.war"
-
-
-    - name: Start Tomcat
-      command: "{{ tomcat_home }}/bin/startup.sh"
-      async: 60
-      poll: 0
+    - name: Set CATALINA_HOME environment variable
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: "export CATALINA_HOME={{ tomcat_install_dir }}/apache-tomcat-{{ tomcat_version }}"
+        create: yes
