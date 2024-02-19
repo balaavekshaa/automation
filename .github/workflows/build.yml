@@ -68,4 +68,5 @@ jobs:
       - name: Run ansible script
         shell: bash  
         run: |
-            ./ansible/execute-ansible.sh
+            cd ansible; ansible-playbook -i host tomcat.yml -vvv
+            
