@@ -1,4 +1,4 @@
-name: sample
+name: CI-CD pipeline
 
 on:
   push:
@@ -47,7 +47,7 @@ jobs:
     needs: build
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     
     steps:
       - name: Download artifact
