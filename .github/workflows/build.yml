@@ -69,5 +69,6 @@ jobs:
         shell: bash  
         run: |
             hostname -i
+            whoami 
             cd ansible; ansible-playbook -i webhost.ini tomcat.yml -vvv
             
