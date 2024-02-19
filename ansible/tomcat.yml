@@ -1,0 +1,83 @@
+---
+- name: Install, Deploy, and Restart Tomcat
+  hosts: your_tomcat_servers
+  become: yes
+  vars:
+    tomcat_version: "9.0.62"
+    tomcat_home: "/opt/tomcat"
+    tomcat_user: "tomcat"
+    tomcat_group: "tomcat"
+    war_file: "path/to/your/app.war" 
+    app_name: "myapp"
+
+  tasks:
+    - name: Install necessary packages
+      apt:
+        name:
+          - default-jdk
+          - unzip
+          - tar
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Install necessary packages
+      yum:
+        name:
+          - java-1.8.0-openjdk
+          - unzip
+          - tar
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: Add Tomcat user
+      user:
+        name: "{{ tomcat_user }}"
+        group: "{{ tomcat_group }}"
+        system: yes
+        create_home: false
+
+    - name: Download Tomcat
+      get_url:
+        url: "https://archive.apache.org/dist/tomcat/tomcat-9/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        dest: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        validate_certs: no
+
+    - name: Create Tomcat directory
+      file:
+        path: "{{ tomcat_home }}"
+        state: directory
+        owner: "{{ tomcat_user }}"
+        group: "{{ tomcat_group }}"
+
+    - name: Extract Tomcat
+      ansible.builtin.unarchive:
+        src: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        dest: "{{ tomcat_home }}"
+        remote_src: yes
+        extra_opts: [--strip-components=1]
+        creates: "{{ tomcat_home }}/bin/startup.sh"
+        owner: "{{ tomcat_user }}"
+        group: "{{ tomcat_group }}"
+
+    - name: Deploy WAR file
+      copy:
+        src: "{{ war_file }}"
+        dest: "{{ tomcat_home }}/webapps/{{ app_name }}.war"
+        owner: "{{ tomcat_user }}"
+        group: "{{ tomcat_group }}"
+
+    - name: Restart Tomcat
+      systemd:
+        name: tomcat
+        state: restarted
+        enabled: yes
+      when: ansible_service_mgr == "systemd"
+      notify:
+        - restart tomcat
+
+  handlers:
+    - name: restart tomcat
+      systemd:
+        name: tomcat
+        state: restarted
+        enabled: yes

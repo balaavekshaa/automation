@@ -53,4 +53,8 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: my-application
+          name: my-application  
+
+      - name: Display structure of downloaded files
+        run: ls -ltr
+      
