@@ -1,26 +1,15 @@
 ---
-- name: Install, Deploy, and Restart Tomcat
-  hosts: tomcatsrv
-  become: yes
+- name: Install Tomcat without sudo
+  hosts: localhost
   vars:
     tomcat_version: "9.0.62"
-    tomcat_home: "/mnt/d/ansible-example/tomcat/apache-tomcat-9.0.85"
-    war_file: "sparkjava-hello-world-1.0.war" 
-    app_name: "sparkjava-hello-world-1.0"
-
+    tomcat_install_dir: "{{ ansible_env.HOME }}/tomcat"
+    tomcat_user: "{{ ansible_user }}"
   tasks:
 
-    - name: Stop Tomcat
-      command: "{{ tomcat_home }}/bin/shutdown.sh"
-      ignore_errors: yes
-    
-    - name: Deploy WAR file
-      copy:
-        src: "{{ war_file }}"
-        dest: "{{ tomcat_home }}/webapps/{{ app_name }}.war"
- 
 
-    - name: Start Tomcat
-      command: "{{ tomcat_home }}/bin/startup.sh"
-      async: 60
-      poll: 0
+    - name: Set CATALINA_HOME environment variable
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: "export CATALINA_HOME={{ tomcat_install_dir }}/apache-tomcat-{{ tomcat_version }}"
+        create: yes
