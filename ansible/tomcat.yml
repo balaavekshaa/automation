@@ -48,7 +48,7 @@
         state: directory
         mode: '0777'
 
-   - name: Update Tomcat permissions
+    - name: Update Tomcat permissions
       file:
         path: "{{ tomcat_install_dir }}/apache-tomcat-{{ tomcat_version }}"
         recurse: yes
