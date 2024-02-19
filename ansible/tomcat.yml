@@ -59,6 +59,10 @@
         owner: "{{ tomcat_user }}"
         group: "{{ tomcat_group }}"
 
+    - name: Stop Tomcat
+      command: "{{ tomcat_home }}/bin/shutdown.sh"
+      ignore_errors: yes
+    
     - name: Deploy WAR file
       copy:
         src: "{{ war_file }}"
