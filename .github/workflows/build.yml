@@ -62,5 +62,7 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -ltr
       
-      - name: Deploy to tomcat
-        run:  ./ansible/execute-ansible.sh
+      - name: Run ansible script
+        shell: bash 
+        run: |
+          ./ansible/execute-ansible.sh
