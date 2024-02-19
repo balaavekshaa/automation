@@ -64,7 +64,7 @@ jobs:
       
       - name: Give permission
         shell: bash 
-        run:  chmod +x /ansible/*
+        run:  chmod 777 ansible
       - name: Run ansible script
         shell: bash  
         run: |
