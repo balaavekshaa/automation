@@ -7,7 +7,7 @@
     tomcat_home: "/opt/tomcat"
     tomcat_user: "tomcat"
     tomcat_group: "tomcat"
-    war_file: "path/to/your/app.war" 
+    war_file: "sparkjava-hello-world-1.0.war" 
     app_name: "myapp"
 
   tasks:
