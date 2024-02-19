@@ -36,11 +36,15 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build and analyze
         run: mvn -B clean  package
+      - name: copy
+        run: cp -R ansible target/
+        
       - uses: actions/upload-artifact@v4
         with:
           name: my-application
           path: target/*.war
           retention-days: 5
+
       - name: Output artifact ID
         run:  echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
   deploy:
