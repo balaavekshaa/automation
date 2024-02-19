@@ -29,12 +29,7 @@
         state: present
       when: ansible_os_family == "RedHat"
 
-    - name: Add Tomcat user
-      user:
-        name: "{{ tomcat_user }}"
-        group: "{{ tomcat_group }}"
-        system: yes
-        create_home: false
+
 
     - name: Download Tomcat
       get_url:
@@ -48,11 +43,7 @@
         state: directory
         mode: '0777'
 
-    - name: Update Tomcat permissions
-      file:
-        path: "{{ tomcat_install_dir }}/apache-tomcat-{{ tomcat_version }}"
-        recurse: yes
-        mode: '0777'
+
 
     - name: Extract Tomcat
       ansible.builtin.unarchive:
@@ -61,8 +52,7 @@
         remote_src: yes
         extra_opts: [--strip-components=1]
         creates: "{{ tomcat_home }}/bin/startup.sh"
-        owner: "{{ tomcat_user }}"
-        group: "{{ tomcat_group }}"
+
      
     
 
@@ -74,8 +64,6 @@
       copy:
         src: "{{ war_file }}"
         dest: "{{ tomcat_home }}/webapps/{{ app_name }}.war"
-        owner: "{{ tomcat_user }}"
-        group: "{{ tomcat_group }}"
 
 
     - name: Start Tomcat
