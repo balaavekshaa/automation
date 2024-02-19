@@ -6,10 +6,9 @@
     tomcat_version: "9.0.62"
     tomcat_home: "/mnt/d/ansible-example/tomcat/apache-tomcat-9.0.85"
     war_file: "sparkjava-hello-world-1.0.war" 
-    app_name: "myapp"
+    app_name: "sparkjava-hello-world-1.0"
 
   tasks:
-
 
     - name: Stop Tomcat
       command: "{{ tomcat_home }}/bin/shutdown.sh"
