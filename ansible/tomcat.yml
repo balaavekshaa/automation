@@ -4,7 +4,7 @@
   become: yes
   vars:
     tomcat_version: "9.0.62"
-    tomcat_home: "/opt/tomcat"
+    tomcat_home: "tomcat"
     tomcat_user: "tomcat"
     tomcat_group: "tomcat"
     war_file: "sparkjava-hello-world-1.0.war" 
