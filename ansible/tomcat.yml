@@ -9,7 +9,7 @@
     app_name: "sparkjava-hello-world-1.0"
 
   tasks:
-
+   
     - name: Stop Tomcat
       command: "{{ tomcat_home }}/bin/shutdown.sh"
       ignore_errors: yes

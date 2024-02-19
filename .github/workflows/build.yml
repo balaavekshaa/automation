@@ -70,5 +70,6 @@ jobs:
         run: |
             hostname -i
             whoami 
+            chmod 777 webhost.ini tomcat.yml
             cd ansible; ansible-playbook -i webhost.ini tomcat.yml -vvv
             
