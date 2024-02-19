@@ -48,6 +48,8 @@
         state: directory
         owner: "{{ tomcat_user }}"
         group: "{{ tomcat_group }}"
+        recurse: yes
+        mode: '0755'
 
     - name: Extract Tomcat
       ansible.builtin.unarchive:
@@ -58,8 +60,7 @@
         creates: "{{ tomcat_home }}/bin/startup.sh"
         owner: "{{ tomcat_user }}"
         group: "{{ tomcat_group }}"
-        recurse: yes
-        mode: '0755'
+     
     
 
     - name: Stop Tomcat
