@@ -70,18 +70,8 @@
         owner: "{{ tomcat_user }}"
         group: "{{ tomcat_group }}"
 
-    - name: Restart Tomcat
-      systemd:
-        name: tomcat
-        state: restarted
-        enabled: yes
-      when: ansible_service_mgr == "systemd"
-      notify:
-        - restart tomcat
 
-  handlers:
-    - name: restart tomcat
-      systemd:
-        name: tomcat
-        state: restarted
-        enabled: yes
+    - name: Start Tomcat
+      command: "{{ tomcat_home }}/bin/startup.sh"
+      async: 60
+      poll: 0
