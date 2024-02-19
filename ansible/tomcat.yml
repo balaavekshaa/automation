@@ -46,10 +46,13 @@
       file:
         path: "{{ tomcat_home }}"
         state: directory
-        owner: "{{ tomcat_user }}"
-        group: "{{ tomcat_group }}"
+        mode: '0777'
+
+   - name: Update Tomcat permissions
+      file:
+        path: "{{ tomcat_install_dir }}/apache-tomcat-{{ tomcat_version }}"
         recurse: yes
-        mode: '0755'
+        mode: '0777'
 
     - name: Extract Tomcat
       ansible.builtin.unarchive:
