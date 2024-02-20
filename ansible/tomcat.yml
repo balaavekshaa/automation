@@ -1,6 +1,6 @@
 ---
 - name: Install, Deploy, and Restart Tomcat
-  hosts: localhost
+  hosts: tomcatsrv
   become: yes
   vars:
     tomcat_version: "9.0.62"
