@@ -5,8 +5,8 @@
   vars:
     tomcat_version: "9.0.62"
     tomcat_home: "tomcat"
-    war_file: "../sparkjava-hello-world-1.0.war" 
-    app_name: "sparkjava-hello-world-1.0"
+    war_file: "../demo-0.0.1-SNAPSHOT.war" 
+    app_name: "demo-0.0.1-SNAPSHOT"
 
   tasks:
    
