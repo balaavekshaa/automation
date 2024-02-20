@@ -11,7 +11,9 @@ jobs:
   build:
     name: CI
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,8 +29,10 @@ jobs:
       - name: Build and analyze
         run: mvn -B clean  package
       - name: publish
-        run:  mvn --batch-mode deploy -Dmaven.install.skip=true
-      
+        run: mvn clean deploy -Dmaven.install.skip=true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: copy
         run: cp -R ansible target/
 
