@@ -33,15 +33,15 @@
         remote_src: yes
 
     - name: Stop Tomcat
-      command: "{{ tomcat_home }}/bin/shutdown.sh"
+      command: "{{ tomcat_home }}/apache-tomcat-9.0.85/bin/shutdown.sh"
       ignore_errors: yes
     
     - name: Deploy WAR file
       copy:
         src: "{{ war_file }}"
-        dest: "{{ tomcat_home }}/webapps/{{ app_name }}.war"
+        dest: "{{ tomcat_home }}/apache-tomcat-9.0.85/webapps/{{ app_name }}.war"
  
     - name: Start Tomcat
-      command: "{{ tomcat_home }}/bin/startup.sh"
+      command: "{{ tomcat_home }}apache-tomcat-9.0.85/bin/startup.sh"
       async: 60
       poll: 0
