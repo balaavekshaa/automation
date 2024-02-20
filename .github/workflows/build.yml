@@ -24,10 +24,10 @@ jobs:
           cache: maven
 
       - name: Build and analyze
-        run: mvn -B clean  package
+        run: mvn -B clean package
 
       - name: publish
-        run: mvn clean deploy -Dmaven.install.skip=true
+        run: mvn deploy -Dmaven.install.skip=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -39,7 +39,7 @@ jobs:
           name: my-application
           path: target/*.war
           retention-days: 5
-
+      
       - name: Output artifact ID
         run:  echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
   deploy:
