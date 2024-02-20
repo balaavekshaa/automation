@@ -32,12 +32,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: copy
-        run: cp -R ansible target/
+        run: cp  target/*.war ansible
 
       - uses: actions/upload-artifact@v4
         with:
           name: my-application
-          path: target/*.war
+          path: ansible
           retention-days: 5
       
       - name: Output artifact ID
