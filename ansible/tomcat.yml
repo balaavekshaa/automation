@@ -10,6 +10,28 @@
 
   tasks:
    
+    - name: Install Java JDK
+      ansible.builtin.apt:
+        name: default-jdk
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Download Tomcat
+      ansible.builtin.get_url:
+        url: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.85/bin/apache-tomcat-9.0.85.tar.gz
+        dest: /tmp/apache-tomcat-9.0.85.tar.gz
+
+    - name: Create Tomcat Directory
+      ansible.builtin.file:
+        path: tomcat
+        state: directory
+
+    - name: Extract Tomcat
+      ansible.builtin.unarchive:
+        src: /tmp/apache-tomcat-9.0.85.tar.gz
+        dest: tomcat
+        remote_src: yes
+
     - name: Stop Tomcat
       command: "{{ tomcat_home }}/bin/shutdown.sh"
       ignore_errors: yes
