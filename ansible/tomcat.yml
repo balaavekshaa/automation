@@ -1,10 +1,10 @@
 ---
 - name: Install, Deploy, and Restart Tomcat
-  hosts: localhost
+  hosts: tomcatsrv
   become: yes
   vars:
     tomcat_version: "9.0.62"
-    tomcat_home: "/mnt/d/ansible-example/tomcat/apache-tomcat-9.0.85"
+    tomcat_home: "tomcat"
     war_file: "../sparkjava-hello-world-1.0.war" 
     app_name: "sparkjava-hello-world-1.0"
 
@@ -23,13 +23,13 @@
 
     - name: Create Tomcat Directory
       ansible.builtin.file:
-        path: tomcat
+        path: "{{ tomcat_home }}""
         state: directory
 
     - name: Extract Tomcat
       ansible.builtin.unarchive:
         src: /tmp/apache-tomcat-9.0.85.tar.gz
-        dest: tomcat
+        dest: "{{ tomcat_home }}"
         remote_src: yes
 
     - name: Stop Tomcat
