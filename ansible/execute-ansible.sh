@@ -1,1 +1,1 @@
- ansible-playbook -i host tomcat.yml -vvv
+ansible-playbook -i host tomcat.yml -vvv
