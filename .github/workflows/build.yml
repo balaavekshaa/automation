@@ -10,7 +10,7 @@ jobs:
 
   build:
     name: CI
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -31,7 +31,7 @@ jobs:
       - name: publish
         run: mvn clean deploy
         env:
-          GITHUB_TOKEN: ${{secrets.AUTOMATE_SECRET}}
+          GITHUB_TOKEN: ${{github.token}}
 
       - name: copy
         run: cp -R ansible target/
