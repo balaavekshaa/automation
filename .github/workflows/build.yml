@@ -60,5 +60,5 @@ jobs:
             hostname -i
             whoami 
             cd ansible
-            sudo ansible-playbook -i webhost.ini tomcat.yml -vvv
+            ansible-playbook -i webhost.ini tomcat.yml -vvv
             
