@@ -23,7 +23,7 @@
 
     - name: Create Tomcat Directory
       ansible.builtin.file:
-        path: "{{ tomcat_home }}""
+        path: "{{ tomcat_home }}"
         state: directory
 
     - name: Extract Tomcat
