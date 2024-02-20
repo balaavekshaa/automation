@@ -1,9 +1,7 @@
 name: CI-CD pipeline
 
 on:
-  push:
-    branches:
-      - main
+
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
@@ -11,9 +9,7 @@ jobs:
   build:
     name: CI
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    
     steps:
       - uses: actions/checkout@v4
         with:
