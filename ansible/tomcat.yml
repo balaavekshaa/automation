@@ -42,6 +42,6 @@
         dest: "{{ tomcat_home }}/apache-tomcat-9.0.85/webapps/{{ app_name }}.war"
  
     - name: Start Tomcat
-      command: "{{ tomcat_home }}apache-tomcat-9.0.85/bin/startup.sh"
+      command: "nohup {{ tomcat_home }}apache-tomcat-9.0.85/bin/startup.sh"
       async: 60
       poll: 0
