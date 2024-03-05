@@ -1,30 +1,25 @@
 ---
-- name: Install, Deploy, and Restart Tomcat
+- name: Manage Tomcat as a service with Ansible
   hosts: tomcatsrv
   become: yes
   vars:
     tomcat_version: "9.0.62"
-    tomcat_home: "tomcat"
-    war_file: "demo-0.0.1-SNAPSHOT.war" 
+    tomcat_home: "/opt/tomcat"
+    war_file: "demo-0.0.1-SNAPSHOT.war"
     app_name: "demo-0.0.1-SNAPSHOT"
+    java_home: "/usr/lib/jvm/java-11-openjdk"
+
 
   tasks:
-   
-    - name: Install Java JDK
-      ansible.builtin.apt:
-        name: default-jdk
-        state: present
-      when: ansible_os_family == "Debian"
+    - name: Create Tomcat Directory
+      ansible.builtin.file:
+        path: "{{ tomcat_home }}"
+        state: directory
 
     - name: Download Tomcat
       ansible.builtin.get_url:
         url: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.85/bin/apache-tomcat-9.0.85.tar.gz
         dest: /tmp/apache-tomcat-9.0.85.tar.gz
-
-    - name: Create Tomcat Directory
-      ansible.builtin.file:
-        path: "{{ tomcat_home }}"
-        state: directory
 
     - name: Extract Tomcat
       ansible.builtin.unarchive:
@@ -32,16 +27,51 @@
         dest: "{{ tomcat_home }}"
         remote_src: yes
 
-    - name: Stop Tomcat
-      command: "{{ tomcat_home }}/apache-tomcat-9.0.85/bin/shutdown.sh"
-      ignore_errors: yes
-    
-    - name: Deploy WAR file
+    - name: Create Tomcat systemd service file
       copy:
-        src: "{{ war_file }}"
-        dest: "{{ tomcat_home }}/apache-tomcat-9.0.85/webapps/{{ app_name }}.war"
- 
-    - name: Start Tomcat
-      command: "nohup {{ tomcat_home }}apache-tomcat-9.0.85/bin/startup.sh"
-      async: 60
-      poll: 0
+        dest: /etc/systemd/system/tomcat.service
+        content: |
+          [Unit]
+          Description=Apache Tomcat Web Application Container
+          After=network.target
+
+          [Service]
+          Type=forking
+
+          Environment=CATALINA_PID={{ tomcat_home }}/apache-tomcat-9.0.85/temp/tomcat.pid
+          Environment=CATALINA_HOME={{ tomcat_home }}/apache-tomcat-9.0.85
+          Environment=CATALINA_BASE={{ tomcat_home }}/apache-tomcat-9.0.85
+          Environment='CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC'
+          Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
+
+          ExecStart="{{ tomcat_home }}/apache-tomcat-9.0.85/bin/startup.sh"
+          ExecStop="{{ tomcat_home }}/apache-tomcat-9.0.85/bin/shutdown.sh"
+
+          owner=tomcat
+          Group=tomcat
+          mode=0777
+
+          RestartSec=10
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+      notify:
+        - Reload systemd
+        - Restart tomcat
+
+    - name: Enable and start Tomcat service
+      systemd:
+        name: tomcat
+        enabled: yes
+        state: started
+
+  handlers:
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Restart tomcat
+      systemd:
+        name: tomcat
+        state: restarted
